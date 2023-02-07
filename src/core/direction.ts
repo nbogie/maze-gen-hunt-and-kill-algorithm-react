@@ -1,13 +1,29 @@
 
-export type Dir = 'N' | 'E' | 'S' | 'W';
-export const offsetsLookup: { [key: string]: [0 | 1 | -1, 0 | 1 | -1]; } = {
-    E: [1, 0],
-    S: [0, 1],
-    W: [-1, 0],
-    N: [0, -1],
+export const allDirs = ['N', 'E', 'S', 'W'] as const;
+
+export type Dir = typeof allDirs[number];
+
+const offsetsLookup: { [key: string]: PosOffset } = {
+    E: { x: 1, y: 0 },
+    S: { x: 0, y: 1 },
+    W: { x: -1, y: 0 },
+    N: { x: 0, y: -1 },
 };
-export function reciprocalDir(dir: string) {
-    return {
-        'N': 'S', 'E': 'W', 'S': 'N', 'W': 'E'
-    }[dir];
+
+export type PosOffset = { x: 0 | 1 | -1, y: 0 | 1 | -1 }
+export function directionAsOffset(dir: Dir): PosOffset {
+
+    return offsetsLookup[dir];
+}
+
+
+export function reciprocalDir(dir: Dir) {
+    const recipLookup: Record<Dir, Dir> = {
+        'N': 'S',
+        'E': 'W',
+        'S': 'N',
+        'W': 'E'
+    }
+
+    return recipLookup[dir];
 }

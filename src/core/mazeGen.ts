@@ -19,15 +19,17 @@ export interface Point {
 }
 
 export interface Cell {
+    id: number;
     pos: Point;
     wallDirs: Dir[];
     hasWall: (dir: Dir) => boolean;
 
 }
 
-export function createCell(x: number, y: number) {
+export function createCell(id: number, x: number, y: number) {
     const wallDirs: Dir[] = ['N', 'E', 'S', 'W'];
     return {
+        id,
         pos: { x, y },
         wallDirs,
         hasWall: function (dir: Dir) {
@@ -40,8 +42,9 @@ export function createMaze(w: number, h: number): Maze {
     const cells: Cell[] = [];
 
     for (let col = 0; col < w; col++) {
-        for (let row = 0; row < w; row++) {
-            const cell = createCell(col, row);
+        for (let row = 0; row < h; row++) {
+            const id = 1 + (w * row + col);
+            const cell = createCell(id, col, row);
             cells.push(cell);
         }
     }

@@ -8,14 +8,17 @@ interface CellViewProps {
 }
 export function CellView(props: CellViewProps) {
     return <div className={"cell"}>
+
         {props.cell.wallDirs.map(dir => (
-            <div className={"wall " +
-                wallPresence(props.cell, dir) + " " + dir
-            }>
+            <div
+                key={dir}
+                className={"wall " +
+                    wallPresence(props.cell, dir) + " " + dir
+                }>
             </div>
         ))
         }
-        cell
+        {props.cell.id}: {props.gX}, {props.gY}
     </div >;
 }
 

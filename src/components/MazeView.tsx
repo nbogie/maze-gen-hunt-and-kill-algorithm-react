@@ -1,5 +1,4 @@
-import { useMemo } from 'react';
-import { createMaze, Maze } from '../core/mazeGen';
+import { Maze } from '../core/mazeGen';
 import { CellView } from './CellView';
 
 
@@ -15,7 +14,7 @@ export function MazeView({ maze }: MazeViewProps) {
             if (!cell) {
                 throw new Error(`no cell at ${gX}, ${gY}`);
             }
-            cellList.push(<CellView {...{ gX, gY, cell }} />);
+            cellList.push(<CellView key={cell.id} {...{ gX, gY, cell }} />);
         }
     }
     return (
