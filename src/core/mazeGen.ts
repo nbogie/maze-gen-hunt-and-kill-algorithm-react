@@ -41,8 +41,8 @@ export function createCell(id: number, x: number, y: number) {
 export function createMaze(w: number, h: number): Maze {
     const cells: Cell[] = [];
 
-    for (let col = 0; col < w; col++) {
-        for (let row = 0; row < h; row++) {
+    for (let row = 0; row < h; row++) {
+        for (let col = 0; col < w; col++) {
             const id = 1 + (w * row + col);
             const cell = createCell(id, col, row);
             cells.push(cell);

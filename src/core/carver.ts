@@ -8,26 +8,29 @@ export function carveMazeMutates(maze: Maze): void {
     //      carve through to random unvisited neighbour
     //   start location = hunt for new start location matching criteria (else null)
     let location: Cell | null = maze.randomCell();
-    const visitedCells = [];
-    visitedCells.push(location);
-    let counter = 0;
+    const visitedCells: Cell[] = [];
+    let counter = 1;
     while (location) {
+        visitedCells.push(location);
         while (unvisitedNeighboursOf(location, maze, visitedCells).length > 0) {
             const unvis = unvisitedNeighboursOf(location, maze, visitedCells);
+            console.log("Neighbours of ", location, " are ", unvis.map(ns => ns.cell.id))
             const next = pick(unvis);
             carveFromToMutates(maze, location, next);
             location = next.cell;
+            counter++;
             console.log("updating location to ", location)
             visitedCells.push(location);
         }
-        counter++;
         location = huntForNewStart(maze, visitedCells);
-        console.log("hunted up new location: ", location)
-        if (counter > 10) {
-            console.log("stopping due to overrun")
-            return;
+        //TODO: carve to connect new start location to an adjacent visited cell
+
+        if (location) {
+            counter++;
+            console.log("hunted up new location: ", location)
         }
     }
+    console.log({ counter, vcCount: visitedCells.length, maze })
 }
 function huntForNewStart(maze: Maze, visitedCells: Cell[]): Cell | null {
     return maze.cells.find(c =>
@@ -37,13 +40,13 @@ function huntForNewStart(maze: Maze, visitedCells: Cell[]): Cell | null {
 }
 
 export function carveFromToMutates(maze: Maze, from: Cell, to: DirectedCell) {
+    console.log("carving: ", from.id, " to ", to.cell.id, { from, to })
     from.wallDirs = from.wallDirs.filter(wd => wd !== to.dir);
-    to.cell.wallDirs = from.wallDirs.filter(wd => wd !== reciprocalDir(to.dir));
+    to.cell.wallDirs = to.cell.wallDirs.filter(wd => wd !== reciprocalDir(to.dir));
 }
 
 export function getNeighbourInDirection(maze: Maze, fromCell: Cell, direction: Dir): Cell | null {
     const offset: PosOffset = directionAsOffset(direction);
-    console.log(offset)
     return maze.get(fromCell.pos.x + offset.x, fromCell.pos.y + offset.y);
 }
 /** Get all neighbours including the direction the lie in */
@@ -58,7 +61,6 @@ export function unvisitedNeighboursOf(
     visitedCells: Cell[]
 ): DirectedCell[] {
     const nsWithDirs = getAllNeighboursIncDirs(loc, maze);
-    console.log("Neighbours of ", loc, " are ", nsWithDirs.map(ns => ns.cell.id))
     return nsWithDirs.filter((nWithDir) => nWithDir.cell && isUnvisited(visitedCells, nWithDir.cell)) as DirectedCell[];
 }
 

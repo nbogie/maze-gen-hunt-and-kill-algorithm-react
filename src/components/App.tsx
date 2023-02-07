@@ -4,7 +4,7 @@ import { createMaze, Maze } from '../core/mazeGen';
 import { MazeView } from './MazeView';
 
 function App() {
-  const [maze, setMaze] = useState<Maze>(() => createMaze(5, 5));
+  const [maze, setMaze] = useState<Maze>(() => createMaze(8, 8));
 
   function handleCarveRandom() {
     const mazeCopy = { ...maze };//not good enough - shallow

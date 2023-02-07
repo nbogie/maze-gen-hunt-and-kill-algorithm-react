@@ -18,7 +18,11 @@ export function CellView(props: CellViewProps) {
             </div>
         ))
         }
-        {props.cell.id}: {props.gX}, {props.gY}
+        <div className="cellText">
+            {props.cell.id}
+            <br />
+            {props.gX}, {props.gY}
+        </div>
     </div >;
 }
 
