@@ -44,16 +44,16 @@ function randomWalkCarvingMutates(visitedCells: Cell[], location: Cell, maze: Ma
     return location;
 }
 
+export function carveFromToMutates(maze: Maze, from: Cell, to: DirectedCell) {
+    from.wallDirs = from.wallDirs.filter(wd => wd !== to.dir);
+    to.cell.wallDirs = to.cell.wallDirs.filter(wd => wd !== reciprocalDir(to.dir));
+}
+
 function huntForNewStart(maze: Maze, visitedCells: Cell[]): Cell | null {
     return maze.cells.find(c =>
         isUnvisited(visitedCells, c) &&
         isAdjactedToVisitedCell(c, visitedCells, maze)
     ) ?? null;
-}
-
-export function carveFromToMutates(maze: Maze, from: Cell, to: DirectedCell) {
-    from.wallDirs = from.wallDirs.filter(wd => wd !== to.dir);
-    to.cell.wallDirs = to.cell.wallDirs.filter(wd => wd !== reciprocalDir(to.dir));
 }
 
 export function getNeighbourInDirection(maze: Maze, fromCell: Cell, direction: Dir): Cell | null {
@@ -63,10 +63,9 @@ export function getNeighbourInDirection(maze: Maze, fromCell: Cell, direction: D
 
 /** Get all neighbours, including the direction the lie in */
 export function getAllNeighboursWithTheirDirs(loc: Cell, maze: Maze): DirectedCell[] {
-    return (
-        allDirs
-            .map((dir) => ({ dir, cell: getNeighbourInDirection(maze, loc, dir) }))
-            .filter(n => n.cell) as DirectedCell[]
+    return (allDirs
+        .map((dir) => ({ dir, cell: getNeighbourInDirection(maze, loc, dir) }))
+        .filter(n => n.cell) as DirectedCell[]
     );
 }
 
@@ -92,7 +91,6 @@ function isAdjactedToVisitedCell(c: Cell, visitedCells: Cell[], maze: Maze): boo
     const neighbourCells = getAllNeighboursWithTheirDirs(c, maze).map(v => v.cell);
     return neighbourCells.some(nc => visitedCells.find(vc => vc.id === nc.id));
 }
-
 
 export function pick<T>(arr: T[]): T {
     if (arr.length === 0) {
