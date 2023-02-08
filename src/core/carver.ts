@@ -1,5 +1,5 @@
 import { allDirs, Dir, directionAsOffset, PosOffset, reciprocalDir } from "./direction";
-import { Maze, Cell, DirectedCell } from "./mazeGen";
+import { Maze, Cell, DirectedCell } from "./maze";
 
 export function carveMazeMutates(maze: Maze): void {
     //start location = choose starting location at random
@@ -12,7 +12,7 @@ export function carveMazeMutates(maze: Maze): void {
     //   if new start location
     //      connect up new start location to an adjacent explored cell
 
-    let location: Cell | null = maze.randomCell();
+    let location: Cell | null = pick(maze.cells);
     const visitedCells: Cell[] = [];
 
     while (location !== null) {

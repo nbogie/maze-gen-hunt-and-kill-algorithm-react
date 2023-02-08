@@ -1,4 +1,4 @@
-import { Maze } from '../core/mazeGen';
+import { Maze } from '../core/maze';
 import { CellView } from './CellView';
 
 

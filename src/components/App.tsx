@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { carveMazeMutates } from "../core/carver";
-import { createMaze, Maze } from '../core/mazeGen';
+import { createMaze, Maze } from '../core/maze';
 import { MazeView } from './MazeView';
 
 function App() {

@@ -1,4 +1,4 @@
-import { Cell } from '../core/mazeGen';
+import { Cell } from '../core/maze';
 import { Dir } from "../core/direction";
 
 interface CellViewProps {

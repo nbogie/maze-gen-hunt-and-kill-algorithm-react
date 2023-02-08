@@ -5,7 +5,6 @@ export interface Maze {
     width: number;
     height: number;
     cells: Cell[];
-    randomCell: () => Cell;
 }
 
 export interface DirectedCell {
@@ -43,7 +42,7 @@ export function createMaze(numCellsPerSide: number): Maze {
     const w: number = numCellsPerSide;
     const cells: Cell[] = [];
 
-
+    //populate cells
     for (let row = 0; row < h; row++) {
         for (let col = 0; col < w; col++) {
             const id = 1 + (w * row + col);
@@ -52,25 +51,19 @@ export function createMaze(numCellsPerSide: number): Maze {
         }
     }
 
+    function get(x: number, y: number): Cell | null {
+        if (x < 0 || x >= w || y < 0 || y >= h) {
+            return null;
+        }
+        return cells[y * w + x];
+    }
+
     const maze: Maze = {
         width: w,
         height: h,
         cells,
-        get: function (x, y) {
-            if (x < 0 || x >= w || y < 0 || y >= h) {
-                return null;
-            }
-            return cells[y * w + x];
-        },
-        randomCell: function () {
-            const res = this.get(
-                Math.floor(Math.random() * w),
-                Math.floor(Math.random() * h)
-            ) as Cell;
-            console.assert(!!res, 'random cell should never be undefined');
-            return res;
-        },
+        get
     };
+
     return maze;
 }
-

@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { getAllNeighboursWithTheirDirs } from "./carver";
-import { createMaze } from "./mazeGen";
+import { createMaze } from "./maze";
 test("", () => {
     const maze = createMaze(5);
     const mainCell = maze.get(4, 3);
