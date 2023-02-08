@@ -6,8 +6,16 @@
   background-color: #242424;
 }
 
+.App {
+  max-width: 1024px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .mazeView {
-  width: 40rem;
+  width: 50vw;
   height: 100%;
   aspect-ratio: 1;
   display: grid;
@@ -30,10 +38,13 @@
 
 .cell .cellText {
   opacity: 0.2;
+  transition: opacity 0.4s ease-in-out;
+  transition: scale 0.4s ease-in-out;
 }
 
 .cell:hover .cellText {
   opacity: 0.9;
+  scale: 1.2;
 }
 
 .wall {
@@ -62,7 +73,6 @@
 .wall.S {
   bottom: 0;
 }
-
 
 .wall.W {
   left: 0;
