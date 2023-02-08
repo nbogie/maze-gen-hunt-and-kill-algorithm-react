@@ -2,8 +2,6 @@ import { Cell } from '../core/mazeGen';
 import { Dir } from "../core/direction";
 
 interface CellViewProps {
-    gX: number;
-    gY: number;
     cell: Cell;
 }
 export function CellView(props: CellViewProps) {
@@ -21,7 +19,7 @@ export function CellView(props: CellViewProps) {
         <div className="cellText">
             {props.cell.id}
             <br />
-            {props.gX}, {props.gY}
+            {props.cell.pos.x}, {props.cell.pos.y}
         </div>
     </div >;
 }

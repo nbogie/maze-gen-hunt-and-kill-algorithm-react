@@ -38,8 +38,11 @@ export function createCell(id: number, x: number, y: number) {
     };
 }
 
-export function createMaze(w: number, h: number): Maze {
+export function createMaze(numCellsPerSide: number): Maze {
+    const h: number = numCellsPerSide;
+    const w: number = numCellsPerSide;
     const cells: Cell[] = [];
+
 
     for (let row = 0; row < h; row++) {
         for (let col = 0; col < w; col++) {

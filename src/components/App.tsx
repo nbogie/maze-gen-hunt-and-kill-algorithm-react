@@ -4,7 +4,7 @@ import { createMaze, Maze } from '../core/mazeGen';
 import { MazeView } from './MazeView';
 
 function App() {
-  const [maze, setMaze] = useState<Maze>(() => createMaze(8, 8));
+  const [maze, setMaze] = useState<Maze>(() => createMaze(8));
 
   function handleCarveRandom() {
     //TODO: shallow copy is not good enough.  Some maintained cells will be mutated.

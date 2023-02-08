@@ -14,11 +14,14 @@ export function MazeView({ maze }: MazeViewProps) {
             if (!cell) {
                 throw new Error(`no cell at ${gX}, ${gY}`);
             }
-            cellList.push(<CellView key={cell.id} {...{ gX, gY, cell }} />);
+            cellList.push(<CellView key={cell.id} cell={cell} />);
         }
     }
+
+    //This, to tell css grid how many rows and cols.  Probably possible in pure css.
+    const styleWithVar = { "--numColumnsInGrid": maze.width } as React.CSSProperties;
     return (
-        <div className="mazeView">
+        <div className="mazeView" style={styleWithVar}>
             {cellList}
         </div>
     );
