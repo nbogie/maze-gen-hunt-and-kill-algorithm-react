@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import { getAllNeighboursWithTheirDirs } from "./carver";
 import { createMaze } from "./mazeGen";
 test("", () => {
-    const maze = createMaze(5, 5);
+    const maze = createMaze(5);
     const mainCell = maze.get(4, 3);
     expect(mainCell).toBeTruthy();
     expect(mainCell?.id).toEqual(20)
