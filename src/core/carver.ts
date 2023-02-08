@@ -3,30 +3,47 @@ import { Maze, Cell, DirectedCell } from "./mazeGen";
 
 export function carveMazeMutates(maze: Maze): void {
     //start location = choose starting location at random
+
     //while start location is not null
     //   while current cell has unvisited neighbours
     //      carve through to random unvisited neighbour
+    //
     //   start location = hunt for new start location matching criteria (else null)
+    //   if new start location
+    //      connect up new start location to an adjacent explored cell
+
     let location: Cell | null = maze.randomCell();
     const visitedCells: Cell[] = [];
-    while (location) {
-        visitedCells.push(location);
-        while (unvisitedNeighboursOf(location, maze, visitedCells).length > 0) {
-            const unvis = unvisitedNeighboursOf(location, maze, visitedCells);
-            const next = pick(unvis);
-            carveFromToMutates(maze, location, next);
-            location = next.cell;
-            visitedCells.push(location);
-        }
-        location = huntForNewStart(maze, visitedCells);
 
-        if (location) {
-            //Carve to connect new start location to an adjacent *visited* cell
-            const possibleConnectionCells = visitedNeighboursOf(location, maze, visitedCells);
-            carveFromToMutates(maze, location, pick(possibleConnectionCells));
-        }
+    while (location !== null) {
+        randomWalkCarvingMutates(visitedCells, location, maze);
+        location = huntAndConnectToExistingMutates(visitedCells, maze);
     }
 }
+
+function huntAndConnectToExistingMutates(visitedCells: Cell[], maze: Maze) {
+    const location = huntForNewStart(maze, visitedCells);
+
+    if (location) {
+        //Carve to connect new start location to an adjacent *visited* cell
+        const possibleConnectionCells = visitedNeighboursOf(location, maze, visitedCells);
+        carveFromToMutates(maze, location, pick(possibleConnectionCells));
+    }
+    return location;
+}
+
+function randomWalkCarvingMutates(visitedCells: Cell[], location: Cell, maze: Maze): Cell {
+    visitedCells.push(location);
+    while (unvisitedNeighboursOf(location, maze, visitedCells).length > 0) {
+        const unvis = unvisitedNeighboursOf(location, maze, visitedCells);
+        const next = pick(unvis);
+        carveFromToMutates(maze, location, next);
+        location = next.cell;
+        visitedCells.push(location);
+    }
+    return location;
+}
+
 function huntForNewStart(maze: Maze, visitedCells: Cell[]): Cell | null {
     return maze.cells.find(c =>
         isUnvisited(visitedCells, c) &&
