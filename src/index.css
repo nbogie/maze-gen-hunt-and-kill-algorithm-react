@@ -18,7 +18,7 @@
   /* a default but will be dynamically set by react */
   --numColumnsInGrid: 8;
 
-  width: 50vw;
+  width: 40vw;
   height: 100%;
   aspect-ratio: 1;
   display: grid;
@@ -83,4 +83,18 @@
 
 .wall.E {
   right: 0;
+}
+
+.controls {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-bottom: 1rem;
+}
+
+button {
+  font-size: 1.2rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
 }
