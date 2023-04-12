@@ -1,4 +1,10 @@
-import { allDirs, Dir, directionAsOffset, PosOffset, reciprocalDir } from "./direction";
+import {
+    allDirs,
+    Dir,
+    directionAsOffset,
+    PosOffset,
+    reciprocalDir,
+} from "./direction";
 import { Maze, Cell, DirectedCell } from "./maze";
 
 export function carveMazeMutates(maze: Maze): void {
@@ -26,13 +32,21 @@ function huntAndConnectToExistingMutates(visitedCells: Cell[], maze: Maze) {
 
     if (location) {
         //Carve to connect new start location to an adjacent *visited* cell
-        const possibleConnectionCells = visitedNeighboursOf(location, maze, visitedCells);
+        const possibleConnectionCells = visitedNeighboursOf(
+            location,
+            maze,
+            visitedCells
+        );
         carveFromToMutates(maze, location, pick(possibleConnectionCells));
     }
     return location;
 }
 
-function randomWalkCarvingMutates(visitedCells: Cell[], location: Cell, maze: Maze): Cell {
+function randomWalkCarvingMutates(
+    visitedCells: Cell[],
+    location: Cell,
+    maze: Maze
+): Cell {
     visitedCells.push(location);
     while (unvisitedNeighboursOf(location, maze, visitedCells).length > 0) {
         const unvis = unvisitedNeighboursOf(location, maze, visitedCells);
@@ -45,56 +59,85 @@ function randomWalkCarvingMutates(visitedCells: Cell[], location: Cell, maze: Ma
 }
 
 export function carveFromToMutates(maze: Maze, from: Cell, to: DirectedCell) {
-    from.wallDirs = from.wallDirs.filter(wd => wd !== to.dir);
-    to.cell.wallDirs = to.cell.wallDirs.filter(wd => wd !== reciprocalDir(to.dir));
+    from.wallDirs = from.wallDirs.filter((wd) => wd !== to.dir);
+    to.cell.wallDirs = to.cell.wallDirs.filter(
+        (wd) => wd !== reciprocalDir(to.dir)
+    );
 }
 
 function huntForNewStart(maze: Maze, visitedCells: Cell[]): Cell | null {
-    return maze.cells.find(c =>
-        isUnvisited(visitedCells, c) &&
-        isAdjactedToVisitedCell(c, visitedCells, maze)
-    ) ?? null;
+    return (
+        maze.cells.find(
+            (c) =>
+                isUnvisited(visitedCells, c) &&
+                isAdjactedToVisitedCell(c, visitedCells, maze)
+        ) ?? null
+    );
 }
 
-export function getNeighbourInDirection(maze: Maze, fromCell: Cell, direction: Dir): Cell | null {
+export function getNeighbourInDirection(
+    maze: Maze,
+    fromCell: Cell,
+    direction: Dir
+): Cell | null {
     const offset: PosOffset = directionAsOffset(direction);
     return maze.get(fromCell.pos.x + offset.x, fromCell.pos.y + offset.y);
 }
 
 /** Get all neighbours, including the direction the lie in.  Ignore walls */
-export function getAllNeighboursWithTheirDirs(loc: Cell, maze: Maze): DirectedCell[] {
-    return (allDirs
+export function getAllNeighboursWithTheirDirs(
+    loc: Cell,
+    maze: Maze
+): DirectedCell[] {
+    return allDirs
         .map((dir) => ({ dir, cell: getNeighbourInDirection(maze, loc, dir) }))
-        .filter(n => n.cell) as DirectedCell[]
+        .filter((n) => n.cell) as DirectedCell[];
+}
+
+export function unvisitedNeighboursOf(
+    loc: Cell,
+    maze: Maze,
+    visitedCells: Cell[]
+): DirectedCell[] {
+    return getAllNeighboursWithTheirDirs(loc, maze).filter((nWithDir) =>
+        isUnvisited(visitedCells, nWithDir.cell)
     );
 }
 
-export function unvisitedNeighboursOf(loc: Cell, maze: Maze, visitedCells: Cell[]): DirectedCell[] {
-    return getAllNeighboursWithTheirDirs(loc, maze)
-        .filter((nWithDir) => isUnvisited(visitedCells, nWithDir.cell));
-}
-
-export function visitedNeighboursOf(loc: Cell, maze: Maze, visitedCells: Cell[]): DirectedCell[] {
-    return getAllNeighboursWithTheirDirs(loc, maze)
-        .filter((nWithDir) => isVisited(visitedCells, nWithDir.cell));
+export function visitedNeighboursOf(
+    loc: Cell,
+    maze: Maze,
+    visitedCells: Cell[]
+): DirectedCell[] {
+    return getAllNeighboursWithTheirDirs(loc, maze).filter((nWithDir) =>
+        isVisited(visitedCells, nWithDir.cell)
+    );
 }
 
 function isVisited(visitedCells: Cell[], soughtCell: Cell): boolean {
-    return !!visitedCells.find(vc => vc.id === soughtCell.id)
+    return !!visitedCells.find((vc) => vc.id === soughtCell.id);
 }
 
 function isUnvisited(visitedCells: Cell[], soughtCell: Cell): boolean {
     return !isVisited(visitedCells, soughtCell);
 }
 
-function isAdjactedToVisitedCell(c: Cell, visitedCells: Cell[], maze: Maze): boolean {
-    const neighbourCells = getAllNeighboursWithTheirDirs(c, maze).map(v => v.cell);
-    return neighbourCells.some(nc => visitedCells.find(vc => vc.id === nc.id));
+function isAdjactedToVisitedCell(
+    c: Cell,
+    visitedCells: Cell[],
+    maze: Maze
+): boolean {
+    const neighbourCells = getAllNeighboursWithTheirDirs(c, maze).map(
+        (v) => v.cell
+    );
+    return neighbourCells.some((nc) =>
+        visitedCells.find((vc) => vc.id === nc.id)
+    );
 }
 
 export function pick<T>(arr: T[]): T {
     if (arr.length === 0) {
-        throw new Error('Tried to pick() from empty array');
+        throw new Error("Tried to pick() from empty array");
     }
     return arr[Math.floor(Math.random() * arr.length)];
 }
