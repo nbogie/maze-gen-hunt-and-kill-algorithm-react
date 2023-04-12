@@ -84,6 +84,24 @@ export function getNeighbourInDirection(
     return maze.get(fromCell.pos.x + offset.x, fromCell.pos.y + offset.y);
 }
 
+/**
+ * Return cell in given direction, if there is one and if it's not blocked by a wall.
+ *
+ */
+export function getNeighbourInDirectionIfNoWall(
+    maze: Maze,
+    fromCell: Cell,
+    direction: Dir
+): Cell | null {
+    const offset: PosOffset = directionAsOffset(direction);
+    const cellOrNull = maze.get(
+        fromCell.pos.x + offset.x,
+        fromCell.pos.y + offset.y
+    );
+
+    return cellOrNull && !fromCell.hasWall(direction) ? cellOrNull : null;
+}
+
 /** Get all neighbours, including the direction the lie in.  Ignore walls */
 export function getAllNeighboursWithTheirDirs(
     loc: Cell,
@@ -91,6 +109,19 @@ export function getAllNeighboursWithTheirDirs(
 ): DirectedCell[] {
     return allDirs
         .map((dir) => ({ dir, cell: getNeighbourInDirection(maze, loc, dir) }))
+        .filter((n) => n.cell) as DirectedCell[];
+}
+
+/** Get all neighbours that are not blocked by a wall. Including the direction the lie in. */
+export function getAllNeighboursWithTheirDirsIfNoWall(
+    loc: Cell,
+    maze: Maze
+): DirectedCell[] {
+    return allDirs
+        .map((dir) => ({
+            dir,
+            cell: getNeighbourInDirectionIfNoWall(maze, loc, dir),
+        }))
         .filter((n) => n.cell) as DirectedCell[];
 }
 
