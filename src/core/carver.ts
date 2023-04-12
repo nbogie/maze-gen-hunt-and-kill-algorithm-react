@@ -61,7 +61,7 @@ export function getNeighbourInDirection(maze: Maze, fromCell: Cell, direction: D
     return maze.get(fromCell.pos.x + offset.x, fromCell.pos.y + offset.y);
 }
 
-/** Get all neighbours, including the direction the lie in */
+/** Get all neighbours, including the direction the lie in.  Ignore walls */
 export function getAllNeighboursWithTheirDirs(loc: Cell, maze: Maze): DirectedCell[] {
     return (allDirs
         .map((dir) => ({ dir, cell: getNeighbourInDirection(maze, loc, dir) }))

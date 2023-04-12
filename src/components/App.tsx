@@ -1,21 +1,22 @@
-import { useState } from 'react';
+import { useMemo, useState } from "react";
 import { carveMazeMutates } from "../core/carver";
-import { createMaze, Maze } from '../core/maze';
-import { MazeView } from './MazeView';
+import { buildAdjacencyList, createMaze, Maze } from "../core/maze";
+import { MazeView } from "./MazeView";
 
 function App() {
   const [gridSize, setGridSize] = useState<number>(8);
   const [maze, setMaze] = useState<Maze>(() => createMaze(gridSize));
+  const adjacencyList = useMemo(() => buildAdjacencyList(maze), [maze]);
 
   function handleCarve() {
     //TODO: shallow copy is not good enough.  Some maintained cells will be mutated.
     const mazeCopy = { ...maze };
-    carveMazeMutates(mazeCopy)
-    setMaze(mazeCopy)
+    carveMazeMutates(mazeCopy);
+    setMaze(mazeCopy);
   }
 
   function handleReset(newGridSize: number | null = null) {
-    setMaze(createMaze(newGridSize ?? gridSize))
+    setMaze(createMaze(newGridSize ?? gridSize));
   }
 
   function handleChangeGridSize(newGridSize: number): void {
@@ -32,9 +33,9 @@ function App() {
         <a href="https://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm">Based on original article by Jamis Buck</a>
       </div>
       <MazeView maze={maze} />
+      <pre>{JSON.stringify(adjacencyList, null, 2)}</pre>
     </div>
   )
 }
 
 export default App
-

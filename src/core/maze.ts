@@ -1,3 +1,4 @@
+import { getAllNeighboursWithTheirDirs } from "./carver";
 import { Dir } from "./direction";
 
 export interface Maze {
@@ -22,11 +23,10 @@ export interface Cell {
     pos: Point;
     wallDirs: Dir[];
     hasWall: (dir: Dir) => boolean;
-
 }
 
 export function createCell(id: number, x: number, y: number) {
-    const wallDirs: Dir[] = ['N', 'E', 'S', 'W'];
+    const wallDirs: Dir[] = ["N", "E", "S", "W"];
     return {
         id,
         pos: { x, y },
@@ -62,8 +62,18 @@ export function createMaze(numCellsPerSide: number): Maze {
         width: w,
         height: h,
         cells,
-        get
+        get,
     };
 
     return maze;
+}
+
+export function buildAdjacencyList(maze: Maze): AdjacencyList {
+    console.log("building adjacency list", Math.random());
+    const allCells = maze.cells;
+    const adjacencyList: [number, number[]][] = allCells.map((cell) => [
+        cell.id,
+        getAllNeighboursWithTheirDirs(cell, maze).map((v) => v.cell.id),
+    ]);
+    return Object.fromEntries(adjacencyList);
 }
