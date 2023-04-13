@@ -1,13 +1,6 @@
 export type AdjacencyList = { [key: number]: number[] };
 export type NodeId = number;
 
-function connectionsFrom(
-    nodeId: NodeId,
-    adjacencyList: AdjacencyList
-): NodeId[] {
-    return adjacencyList[nodeId];
-}
-
 export const demoGraph: AdjacencyList = {
     0: [1, 2],
     1: [3],
@@ -21,22 +14,63 @@ export interface PathfindingResult {
     prevs: (NodeId | null)[];
 }
 
+/* 
+Algorithm for Dijkstra's shortest distances:
+
+function findAllShortestDistances(sourceNode, graph):
+
+    track best known distance to all nodes:
+        infinite initially, except source node (0 dist)
+    track a previous node for each node - allows us to track routes taken
+
+    track visited nodes
+    track queue of nodes to visit (prioritised by promise)
+    
+   while queue is not empty:
+       current = Dequeue the node with the smallest distance from the priority queue.       
+       if current has been visited
+           continue
+
+       Mark the node as visited.
+       
+       //Check all neighbouring nodes to see if their distances need to be updated
+       for neighbour in nodes accessible from current
+           Calculate the tentative distance to the neighbour VIA current
+           
+           If the tentative distance is smaller than the current distance to the neighbour
+                update the distance
+                update the previous node recorded for the neighbour (for pathing)
+
+               And enqueue the neighbour with its new distance to be considered for visitation in the future.               
+
+            
+   Return the calculated distances from the source to all other nodes in the graph.
+ 
+*/
 export function findShortestPaths(
     startNodeId: NodeId,
     adjacencyList: AdjacencyList
 ): PathfindingResult {
     console.log("findShortestPaths: ", { startNodeId, adjacencyList });
-    // debugger;
+
+    // track visited nodes
     const visited: { [nodeId: NodeId]: boolean } = Object.fromEntries(
         Object.keys(adjacencyList).map((id) => [id, false])
     );
-    const prevs: (NodeId | null)[] = [null];
+
+    // track best known distance to all nodes:
+    //     infinite initially except source node (0 dist)
     const dists: (NodeId | null)[] = [];
     dists[startNodeId] = 0;
-    // debugger;
+
     console.log("findShortestPaths: ", { startNodeId, adjacencyList });
+    // track queue of nodes to visit (prioritised by promise)
     const toVisit: { [nodeId: NodeId]: number } = {};
     toVisit[startNodeId] = 0;
+
+    //track the previous node that got us to each node's shortest cost.
+    const prevs: (NodeId | null)[] = [null];
+
     while (Object.keys(toVisit).length > 0) {
         //TODO: there are many large optimisations to use for this step
         const [currentNodeId, _unusedCostToCurrentNode]: [NodeId, number] =
@@ -45,11 +79,6 @@ export function findShortestPaths(
         visited[currentNodeId] = true;
         //take most promising next node:
         const currentCost = toVisit[currentNodeId];
-
-        // console.log("taking next node from toVisit: ", {
-        //     cheapestNodeId: currentNodeId,
-        //     currentCost,
-        // });
 
         //remove it - we'll complete its processing in this pass
         delete toVisit[currentNodeId];
