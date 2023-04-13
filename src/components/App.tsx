@@ -38,7 +38,6 @@ function App() {
         <div className="App">
             <div className="controls">
                 <button onClick={handleCarve}>Carve!</button>
-
                 <button onClick={(e) => handleReset()}>Reset!</button>
                 <input
                     type="number"
@@ -49,15 +48,26 @@ function App() {
                         handleChangeGridSize(parseInt(e.target.value))
                     }
                 />
-                <a href="https://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm">
-                    Based on original article by Jamis Buck
-                </a>
             </div>
             <MazeView
                 maze={maze}
                 pathfindingResult={pathfindingResult}
                 onCellClick={handleCellClick}
             />
+            <div className="credits">
+                <p>
+                    Maze generation algorithm based on{" "}
+                    <a href="https://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm">
+                        Jamis Buck's write-up of the "hunt-and-kill" algorithm.
+                    </a>
+                </p>
+                <p>
+                    Pathfinding:{" "}
+                    <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">
+                        Dijkstra's algorithm
+                    </a>
+                </p>
+            </div>
         </div>
     );
 }
