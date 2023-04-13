@@ -31,23 +31,43 @@
 .cell {
     position: relative;
     display: grid;
-    place-content: center;
+    place-items: center;
     background: skyblue;
     margin: 0.1rem;
-    font-size: 0.9rem;
+    width: 100%;
     overflow: hidden;
     border-radius: 0.3rem;
 }
+.cellAnnotations {
+    user-select: none;
+    font-size: calc(0.5rem * 8 / var(--numColumnsInGrid));
 
-.cell .cellText {
-    opacity: 0.2;
+    display: grid;
+    width: 80%;
+    height: 80%;
+    padding: 0.2rem;
+    grid-template-areas:
+        "id . dist"
+        ". . ."
+        "pos pos .";
+    color: black;
+    opacity: 0.6;
     transition: opacity 0.4s ease-in-out;
     transition: scale 0.4s ease-in-out;
 }
+.cellId {
+    grid-area: id;
+}
+.cellPos {
+    grid-area: pos;
+}
+.cellDist {
+    grid-area: dist;
+}
 
-.cell:hover .cellText {
+.cell:hover .cellAnnotations {
     opacity: 0.9;
-    scale: 1.2;
+    scale: 1.1;
 }
 
 .wall {

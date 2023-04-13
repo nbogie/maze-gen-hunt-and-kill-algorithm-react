@@ -1,13 +1,18 @@
 import { useMemo, useState } from "react";
 import { carveMazeMutates } from "../core/carver";
-import { buildAdjacencyList, createMaze, Maze } from "../core/maze";
+import { PathfindingResult, findShortestPaths } from "../core/graph";
+import { Maze, buildAdjacencyList, createMaze } from "../core/maze";
 import { MazeView } from "./MazeView";
-import { demoGraph, findShortestPaths } from "../core/graph";
 
 function App() {
     const [gridSize, setGridSize] = useState<number>(8);
     const [maze, setMaze] = useState<Maze>(() => createMaze(gridSize));
     const adjacencyList = useMemo(() => buildAdjacencyList(maze), [maze]);
+    const [startNodeId, setStartNodeId] = useState(1);
+    const pathfindingResult: PathfindingResult = useMemo(
+        () => findShortestPaths(startNodeId, adjacencyList),
+        [startNodeId, adjacencyList]
+    );
 
     function handleCarve() {
         //TODO: shallow copy is not good enough.  Some maintained cells will be mutated.
@@ -24,19 +29,15 @@ function App() {
         setGridSize(newGridSize);
         handleReset(newGridSize);
     }
-    function handleDemoFindShortestPaths() {
-        const result = findShortestPaths(0, demoGraph);
-        console.log(result);
-        console.log(findShortestPaths(1, adjacencyList));
+
+    function handleCellClick(cellId: number): void {
+        setStartNodeId(cellId);
     }
 
     return (
         <div className="App">
             <div className="controls">
                 <button onClick={handleCarve}>Carve!</button>
-                <button onClick={handleDemoFindShortestPaths}>
-                    Find shortest Paths - demo data
-                </button>
 
                 <button onClick={(e) => handleReset()}>Reset!</button>
                 <input
@@ -52,8 +53,11 @@ function App() {
                     Based on original article by Jamis Buck
                 </a>
             </div>
-            <MazeView maze={maze} />
-            <pre>{JSON.stringify(adjacencyList, null, 2)}</pre>
+            <MazeView
+                maze={maze}
+                pathfindingResult={pathfindingResult}
+                onCellClick={handleCellClick}
+            />
         </div>
     );
 }

@@ -16,14 +16,22 @@ export const demoGraph: AdjacencyList = {
     4: [],
 };
 
-//TODO: this will go round in circles - it's not correctly dealing with cycles, yet.
+export interface PathfindingResult {
+    dists: (NodeId | null)[];
+    prevs: (NodeId | null)[];
+}
 
 export function findShortestPaths(
     startNodeId: NodeId,
     adjacencyList: AdjacencyList
-): { prevs: (null | NodeId)[]; dists: (null | NodeId)[] } {
-    const prevs: (NodeId | undefined)[] = [undefined];
-    const dists: (NodeId | undefined)[] = [];
+): PathfindingResult {
+    console.log("findShortestPaths: ", { startNodeId, adjacencyList });
+    // debugger;
+    const visited: { [nodeId: NodeId]: boolean } = Object.fromEntries(
+        Object.keys(adjacencyList).map((id) => [id, false])
+    );
+    const prevs: (NodeId | null)[] = [null];
+    const dists: (NodeId | null)[] = [];
     dists[startNodeId] = 0;
     // debugger;
     console.log("findShortestPaths: ", { startNodeId, adjacencyList });
@@ -34,13 +42,14 @@ export function findShortestPaths(
         const [currentNodeId, _unusedCostToCurrentNode]: [NodeId, number] =
             findMostPromisingToVisitNode(toVisit);
 
+        visited[currentNodeId] = true;
         //take most promising next node:
         const currentCost = toVisit[currentNodeId];
 
-        console.log("taking next node from toVisit: ", {
-            cheapestNodeId: currentNodeId,
-            currentCost,
-        });
+        // console.log("taking next node from toVisit: ", {
+        //     cheapestNodeId: currentNodeId,
+        //     currentCost,
+        // });
 
         //remove it - we'll complete its processing in this pass
         delete toVisit[currentNodeId];
@@ -48,43 +57,36 @@ export function findShortestPaths(
         const connectedNodeIds = adjacencyList[currentNodeId];
 
         for (let connectedNodeId of connectedNodeIds) {
-            const costToCurrentNode = dists[currentNodeId];
-            if (costToCurrentNode === undefined) {
+            if (visited[connectedNodeId] === true) {
+                // console.log(
+                //     `skipping already visited node: ${connectedNodeId}`
+                // );
+                continue;
+            }
+            const costToCurrentNode = dists[currentNodeId] ?? null;
+            if (costToCurrentNode === null) {
                 throw new Error(
                     "unexpectedly missing costToCurrentNode from dists array: " +
                         JSON.stringify({ dists })
                 );
             }
             const edgeCost = 1; //TODO: we would have the costs to each connected node, too.
-            const prevBestCostToConnectedNode = dists[connectedNodeId];
+            const prevBestCostToConnectedNode = dists[connectedNodeId] ?? null;
             if (
-                prevBestCostToConnectedNode === undefined ||
+                prevBestCostToConnectedNode === null ||
                 costToCurrentNode + edgeCost < prevBestCostToConnectedNode
             ) {
                 dists[connectedNodeId] = costToCurrentNode + edgeCost;
                 prevs[connectedNodeId] = currentNodeId;
-            }
-
-            const upToDateBestCostToConnectedNode = dists[connectedNodeId];
-            if (upToDateBestCostToConnectedNode === undefined) {
-                throw new Error(
-                    `unexpectedly missing entry for connected node id ${connectedNodeId} from dists ${JSON.stringify(
-                        dists
-                    )}`
-                );
-            }
-            if (
-                !(connectedNodeId in toVisit) ||
-                toVisit[connectedNodeId] > upToDateBestCostToConnectedNode
-            ) {
-                toVisit[connectedNodeId] = upToDateBestCostToConnectedNode;
-            } else {
-                //it's already in toVisit with a better score - don't replace it
+                toVisit[connectedNodeId] = costToCurrentNode + edgeCost;
             }
         }
     }
 
-    return { prevs, dists };
+    return {
+        dists,
+        prevs,
+    };
 }
 function findMostPromisingToVisitNode(toVisit: {
     [nodeId: number]: number;
