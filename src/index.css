@@ -37,6 +37,7 @@
     width: 100%;
     overflow: hidden;
     border-radius: 0.3rem;
+    transition: background 0.4s ease-in-out;
 }
 .cellAnnotations {
     user-select: none;
@@ -53,7 +54,6 @@
     color: black;
     opacity: 0.6;
     transition: opacity 0.4s ease-in-out;
-    transition: scale 0.4s ease-in-out;
 }
 .cellId {
     grid-area: id;
@@ -66,8 +66,7 @@
 }
 
 .cell:hover .cellAnnotations {
-    opacity: 0.9;
-    scale: 1.1;
+    opacity: 1;
 }
 
 .wall {
